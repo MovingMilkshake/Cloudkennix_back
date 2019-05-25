@@ -1,7 +1,12 @@
 var express = require('express');
 var router = express.Router();
 const Users = require('../models/users')
-const jwt = require('jsonwebtoken')
+const {check_auth} = require('../middleware/auth')
+
+router.get('/', check_auth, (req, res) => {
+    let users = Users.find().populate('username')
+    console.log(users)
+})
 
 router.post('/', (req, res) => {
     let { username, password } = req.body;
@@ -18,8 +23,8 @@ router.delete('/', (req, res) => {
   Users.findOneAndDelete({ username }).then(user => {
     res.send(user)
   })
-  .catch(e => {
-    res.send(e)
+  .catch(err => {
+    res.send(err)
   })
 })
 
